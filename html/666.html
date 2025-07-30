@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨国域名救援全记录</title>
+    <style>
+        /* --- 基础与全局样式 --- */
+        :root {
+            --bg-color-1: rgba(197, 223, 248, 0.5); /* 淡蓝色 */
+            --bg-color-2: rgba(248, 204, 228, 0.5); /* 淡粉色 */
+            --bg-color-3: rgba(204, 248, 221, 0.5); /* 淡绿色 */
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --text-primary: #1a1a1a;
+            --text-secondary: #5c5c5c;
+            --accent-primary: #007aff; /* 科技蓝 */
+            --accent-secondary: #ff9500; /* 活力橙 */
+            --code-bg: #2c2c2c;
+            --code-text: #ffae57;
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --card-hover-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
+            --card-radius: 24px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, "PingFang SC", "Segoe UI", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 15% 25%, var(--bg-color-1), transparent 35%),
+                radial-gradient(circle at 85% 75%, var(--bg-color-2), transparent 40%),
+                radial-gradient(circle at 50% 50%, var(--bg-color-3), transparent 40%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* 弥散背景的颗粒感效果 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            opacity: 0.02;
+        }
+
+        /* --- 页面头部 --- */
+        .page-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2rem; }
+            .page-header p { font-size: 1rem; }
+        }
+
+        /* --- Bento 网格布局 --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
+            padding: 0 24px 60px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* --- 卡片基础样式 --- */
+        .card {
+            aspect-ratio: 3 / 4;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--card-border);
+            padding: 28px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            /* 加载动画 */
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            animation-delay: calc(var(--card-index) * 100ms);
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        /* --- 封面卡片 (Card 0) --- */
+        .card[data-card-index="0"] {
+            justify-content: space-between;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        .cover-brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        .cover-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .cover-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        .cover-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0 0 10px 0;
+        }
+        .cover-title .highlight {
+            color: var(--accent-secondary);
+        }
+        .cover-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        .cover-prompt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* --- 内容卡片样式 --- */
+        .card-header {
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+        .card-header .brand-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+        .card-header .brand-subtitle {
+            font-size: 0.85rem;
+            margin: 4px 0 0 0;
+            color: var(--text-secondary);
+        }
+        .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .tip-number {
+            align-self: flex-start;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .tip-title {
+             margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+        .tip-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            flex-grow: 1;
+        }
+        .tip-description ul {
+            padding-left: 0px;
+           margin: 0;
+        }
+        .tip-description li {
+              margin: 0;
+            margin-bottom: 4px;
+        }
+
+        /* 高亮代码/占位符样式 */
+        code {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-family: "SF Mono", "Consolas", "Menlo", monospace;
+        }
+
+        @media (max-width: 400px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                padding: 0 16px 40px;
+            }
+            .card {
+                aspect-ratio: initial; /* 在单列时取消固定比例 */
+                height: auto;
+                padding: 24px;
+            }
+            .cover-title { font-size: 2.2rem; }
+            .tip-title { font-size: 1.4rem; }
+            .tip-description { font-size: 0.95rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <h1>我</h1>
+        <p>一场跨越中、美、印三国的“域名救援”全记录，以及给所有人的实用避坑指南。</p>
+    </header>
+
+    <main class="bento-grid">
+
+        <!-- 卡片 0: 封面 -->
+        <div class="card" data-card-index="0" style="--card-index: 0;">
+            <div class="cover-brand">DeepSeek</div>
+            <div class="cover-main">
+                <div class="cover-emoji">🚨</div>
+                <h2 class="cover-title">跨国域名<br><span class="highlight">救援</span>全记录</h2>
+                <p class="cover-subtitle">新买的.in域名，一天后即被最高注册局锁定！</p>
+            </div>
+            <div class="cover-prompt">右滑或向下滚动查看更多 →</div>
+        </div>
+
+        <!-- 卡片 1: 蜜月期与“静默政变” -->
+        <div class="card" data-card-index="1" style="--card-index: 1;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">事件 1/7</span>
+                <h4 class="tip-title">蜜月期与“静默政变”</h4>
+                <p class="tip-description">
+                    <b>7月21日 (周一):</b> 一切始于兴奋。我在广受好评的注册商 <code>Porkbun</code> 购买了心仪的 <code>.in</code> 域名，并成功部署在 <code>Cloudflare</code> 上。网站访问完美。
+                    <br><br>
+                    <b>7月22日 (周二):</b> 在我享受喜悦时，一场“静默政变”正在酝酿。远在印度的 <code>NIXI</code>（.in 域名的最高注册局），其后台合规系统开始对我提交的注册信息进行例行审核。
+                </p>
+            </div>
+        </div>
+
+        <!-- 卡片 2: 503疑云与第一层迷雾 -->
+        <div class="card" data-card-index="2" style="--card-index: 2;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">事件 2/7</span>
+                <h4 class="tip-title">503疑云与第一层迷雾</h4>
+                <p class="tip-description">
+                    <b>问题爆发：</b> 域名突然无法访问，浏览器显示 <code>HTTP ERROR 503</code>。第一反应：<code>Cloudflare</code> 或我的代码出错了。
+                    <br><br>
+                    <b>排查：</b> 检查 Worker 日志、修正 DNS 记录、检查 SSL/TLS 设置… 把 <code>Cloudflare</code> 后台翻了个底朝天，但网站依旧无法访问。
+                    <br><br>
+                    <b>关键线索：</b> Worker 的默认域名始终正常。这让我意识到，问题可能与 <code>Cloudflare</code> 无关。
+                </p>
+            </div>
+        </div>
+        
+        <!-- 卡片 3: 揭开 serverHold 的真面目 -->
+        <div class="card" data-card-index="3" style="--card-index: 3;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">事件 3/7</span>
+                <h4 class="tip-title">揭开 <code>serverHold</code> 的真面目</h4>
+                <p class="tip-description">
+                    <b>转向注册商：</b> 登录 <code>Porkbun</code>，怀疑账户信息不完整。发现手机号未验证（国内手机号收不到国际码是个大坑！）。幸好用香港手机号完成验证。
+                    <br><br>
+                    <b>无效的努力：</b> 即使所有信息都已验证，域名状态依旧没有任何改变！
+                    <br><br>
+                    <b>首次交锋：</b> 给 <code>Porkbun</code> 支持部门发邮件，数次沟通后，他们终于给出了关键信息：我的域名被施加了 <code>serverHold</code>，DNS 解析服务已在全球范围被暂停。
+                </p>
+            </div>
+        </div>
+
+        <!-- 卡片 4: 最终 BOSS “NIXI” 登场 -->
+        <div class="card" data-card-index="4" style="--card-index: 4;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">事件 4/7</span>
+                <h4 class="tip-title">拨云见日，最终BOSS NIXI登场</h4>
+                <p class="tip-description">
+                    <b>沟通升级：</b> 我的案件被转交给了 <code>Porkbun</code> 的“欺诈与滥用部门”（听起来很吓人，但其实是处理合规问题的专业团队）。
+                    <br><br>
+                    <b>决定性的邮件：</b> 该部门发来了最终诊断：“<code>serverHold</code> 是由 <code>NIXI</code> 施加的，我们（Porkbun）无权解除，您必须亲自联系 <code>NIXI</code> 的支持邮箱。”
+                    <br><br>
+                    <b>开启最终战役：</b> 至此，真正的“BOSS”——印度国家域名注册局 <code>NIXI</code> 浮出水面。
+                </p>
+            </div>
+        </div>
+        
+        <!-- 卡片 5: 与最高注册局的终局之战 -->
+        <div class="card" data-card-index="5" style="--card-index: 5;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">事件 5/7</span>
+                <h4 class="tip-title">与最高注册局的终局之战</h4>
+                <p class="tip-description">
+                    <b>漫长的等待：</b> 附上护照向 <code>NIXI</code> 发送了求助邮件。回复非常缓慢。
+                    <br><br>
+                    <b>首次回复：</b> 要求提供身份证明（Photo ID）和地址证明（Address Proof）。
+                    <br><br>
+                    <b>二次回复：</b> 认可了我的文件，但要求将 <code>WHOIS</code> 地址修改得和文件完全一致。
+                    <br><br>
+                    <b>最终解除：</b> 完成信息更新后，收到邮件：“我们将在今天结束前移除您域名的 <code>server hold</code> 状态。”
+                </p>
+            </div>
+        </div>
+
+        <!-- 卡片 6: 复盘总结 -->
+        <div class="card" data-card-index="6" style="--card-index: 6;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">总结 6/7</span>
+                <h4 class="tip-title">复盘总结：我的得与失</h4>
+                <p class="tip-description1">
+                    <ul>
+                        <li><b>源于信息不规范：</b> 如果一开始就使用真实姓名和完整地址，后续所有麻烦都可以避免。</li>
+                        <li><b>初期排查耗时过久：</b> 在 <code>Cloudflare</code> 环节花费了大量时间，属于“方向性错误”，但也是必经之路。</li>
+                        <li><b>对国际短信的预期不足：</b> 未能预料到国内手机号接收国际验证码的困难。</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <!-- 卡片 7: 避坑指南 -->
+        <div class="card" data-card-index="7" style="--card-index: 7;">
+            <div class="card-header">
+                <h3 class="brand-title">一场跨国“域名救援”全记录</h3>
+                <p class="brand-subtitle">从问题爆发到最终解决的全过程。</p>
+            </div>
+            <div class="card-content">
+                <span class="tip-number">指南 7/7</span>
+                <h4 class="tip-title">给所有人的避坑指南</h4>
+                <p class="tip-description1">
+                    <ol>
+                        <li><b>慎选国家域名 (ccTLD)：</b> 优先选择 <code>.com</code>, <code>.net</code>, <code>.io</code> 等通用域名，规则宽松，稳定省心。</li>
+                        <li><b>注册信息是“法律文件”：</b> 务必使用真实姓名拼音、详细英文地址和有效联系方式。</li>
+                        <li><b>域名排查“三步曲”：</b> ① 查自己 (服务配置) → ② 查状态 (<code>WHOIS</code>) → ③ 查上家 (注册商客服)。</li>
+                    </ol>
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

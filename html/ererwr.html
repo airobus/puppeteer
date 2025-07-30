@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor 订阅方案深度解析</title>
+    <style>
+        /* --- 基础与全局设置 --- */
+        :root {
+            --bg-color: #0d0b14;
+            --card-bg-color: rgba(26, 26, 40, 0.6);
+            --card-border-color: rgba(255, 255, 255, 0.1);
+            --text-primary-color: #e0e0e0;
+            --text-secondary-color: #a0a0b0;
+            --accent-primary-color: #00ddff; /* 科技蓝/青色 */
+            --accent-secondary-color: #ff57b9; /* 亮粉色 */
+            --code-bg-color: #2c2c2c;
+            --code-text-color: #ffae57; /* 亮橙色 */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        /* --- 弥散渐变颗粒感背景 --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary-color);
+            background-image:
+                radial-gradient(circle at 1% 1%, hsla(240, 80%, 15%, 0.8) 0, transparent 25%),
+                radial-gradient(circle at 99% 1%, hsla(300, 80%, 20%, 0.6) 0, transparent 30%),
+                radial-gradient(circle at 50% 99%, hsla(180, 80%, 25%, 0.7) 0, transparent 40%);
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- 页面头部 --- */
+        .page-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            max-width: 900px;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent-primary-color), var(--accent-secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary-color);
+            margin: 0;
+        }
+
+        /* --- Bento 卡片网格布局 --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                padding: 15px;
+                gap: 15px;
+            }
+        }
+
+
+        /* --- 卡片基础样式 --- */
+        .card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: 20px;
+            height: 560px; /* 接近 3:4 比例 */
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: card-load 0.5s ease-out forwards;
+        }
+
+        /* --- 卡片加载动画 --- */
+        @keyframes card-load {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 延迟加载动画 */
+        .card[data-card-index="0"] { animation-delay: 0.1s; }
+        .card[data-card-index="1"] { animation-delay: 0.2s; }
+        .card[data-card-index="2"] { animation-delay: 0.3s; }
+        .card[data-card-index="3"] { animation-delay: 0.4s; }
+        .card[data-card-index="4"] { animation-delay: 0.5s; }
+
+
+        /* --- 卡片悬停效果 --- */
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- 封面卡片 (Card 0) 特定样式 --- */
+        .cover-card {
+            text-align: center;
+            justify-content: space-between;
+        }
+        .cover-card .brand-logo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-secondary-color);
+            align-self: flex-start;
+        }
+        .cover-card .main-slogan {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0;
+        }
+        .cover-card .main-slogan .highlight {
+            font-size: 4rem;
+            color: var(--accent-primary-color);
+            font-family: 'Georgia', serif; /* 衬线体突出对比 */
+        }
+        .cover-card .sub-slogan {
+            font-size: 1.2rem;
+            color: var(--text-secondary-color);
+            margin-top: 10px;
+        }
+        .cover-card .center-icon {
+            font-size: 100px;
+            margin: 20px 0;
+            filter: drop-shadow(0 0 15px var(--accent-secondary-color));
+        }
+        .cover-card .scroll-prompt {
+            font-size: 0.9rem;
+            color: var(--text-secondary-color);
+            opacity: 0.7;
+        }
+
+        /* --- 内容卡片通用样式 --- */
+        .content-card-header {
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--card-border-color);
+        }
+        .content-card-header .brand-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary-color);
+        }
+        .content-card-header .brand-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary-color);
+            margin: 4px 0 0 0;
+        }
+
+        .content-card-body {
+            flex-grow: 1;
+            overflow-y: auto; /* 内容过多时可滚动 */
+        }
+        /* 隐藏滚动条 */
+        .content-card-body::-webkit-scrollbar { display: none; }
+        .content-card-body { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .tip-icon {
+            font-size: 1.8rem;
+        }
+        .tip-meta {
+            flex-grow: 1;
+        }
+        .tip-number {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-secondary-color);
+            background-color: rgba(255, 87, 185, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        .tip-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 4px 0 0 0;
+            line-height: 1.3;
+        }
+
+        .tip-description {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary-color);
+        }
+
+        .tip-description p {
+            margin: 0 0 1em 0;
+        }
+        .tip-description p:last-child {
+            margin-bottom: 0;
+        }
+        .tip-description ul {
+            padding-left: 20px;
+            margin: 1em 0;
+        }
+        .tip-description li {
+            margin-bottom: 0.5em;
+        }
+
+        /* --- 代码/占位符高亮样式 --- */
+        code, .code-highlight {
+            background-color: var(--code-bg-color);
+            color: var(--code-text-color);
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 0.9em;
+        }
+
+        /* --- 对比表格样式 --- */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        .comparison-table th, .comparison-table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid var(--card-border-color);
+            vertical-align: top;
+        }
+        .comparison-table th {
+            color: var(--text-primary-color);
+            font-weight: 600;
+        }
+        .comparison-table td {
+             color: var(--text-secondary-color);
+        }
+        .comparison-table tr:last-child th, .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <h1>Cursor 订阅方案深度解析</h1>
+        <p>一篇看懂 Pro 与 Ultra 计划的最新调整与选择策略</p>
+    </header>
+
+    <main class="bento-grid">
+
+        <!-- 卡片 0: 封面卡片 -->
+        <div class="card cover-card" data-card-index="0">
+            <div class="brand-logo">DeepSeek Presents</div>
+            <div>
+                <div class="center-icon">💡</div>
+                <h2 class="main-slogan">Cursor <br>定价<span class="highlight">大变天</span></h2>
+                <p class="sub-slogan">Pro 更慷慨，Ultra 更强大</p>
+            </div>
+            <div class="scroll-prompt">下滑或右滑查看更多 →</div>
+        </div>
+
+        <!-- 卡片 1: 内容卡片 - Cursor Ultra 计划 -->
+        <div class="card" data-card-index="1">
+            <header class="content-card-header">
+                <h3 class="brand-title">Deepseek 学习秘籍</h3>
+                <p class="brand-subtitle">免费提升技能，10倍学习效率！</p>
+            </header>
+            <div class="content-card-body">
+                <div class="tip-header">
+                    <div class="tip-meta">
+                        <span class="tip-number">提示 1/4</span>
+                        <h4 class="tip-title">全新旗舰：Ultra 计划</h4>
+                    </div>
+                </div>
+                <div class="tip-description">
+                    <p>Cursor 推出了名为 <code>Cursor Ultra</code> 的高端计划，专为重度用户设计。</p>
+                    <ul>
+                        <li><strong>价格定位:</strong> 定价 <code>每月$200</code>，目标是需要可预测高用量的“超级用户”。</li>
+                        <li><strong>核心特性:</strong> 提供比 Pro 计划多 <code>20倍</code> 的使用量，并可调用来自 OpenAI, Anthropic, Google 等顶级 AI 模型。</li>
+                        <li><strong>优先权益:</strong> Ultra 用户将获得新功能的<code>优先体验权</code>。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 卡片 2: 内容卡片 - Pro 计划调整 -->
+        <div class="card" data-card-index="2">
+            <header class="content-card-header">
+                <h3 class="brand-title">Deepseek 学习秘籍</h3>
+                <p class="brand-subtitle">免费提升技能，10倍学习效率！</p>
+            </header>
+            <div class="content-card-body">
+                <div class="tip-header">
+                    <div class="tip-meta">
+                        <span class="tip-number">提示 2/4</span>
+                        <h4 class="tip-title">Pro 计划调整：从数量到速率</h4>
+                    </div>
+                </div>
+                <div class="tip-description">
+                    <p>每月 <code>$20</code> 的 Pro 计划也变得更“慷慨”，但限制方式发生了根本变化。</p>
+                    <p><strong>旧模式:</strong> 每月 <code>500次</code>“快速请求”，超出后变慢或按量付费。</p>
+                    <p><strong>新模式 (默认):</strong> 转为“无限请求但有速率限制”。取消了请求次数的硬性上限，但限制了<code>单位时间内的请求频率</code>，具体阈值不透明，引发了社区讨论。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 卡片 3: 内容卡片 - 用户选择与困惑 -->
+        <div class="card" data-card-index="3">
+            <header class="content-card-header">
+                <h3 class="brand-title">Deepseek 学习秘籍</h3>
+                <p class="brand-subtitle">免费提升技能，10倍学习效率！</p>
+            </header>
+            <div class="content-card-body">
+                <div class="tip-header">
+                    <div class="tip-meta">
+                        <span class="tip-number">提示 3/4</span>
+                        <h4 class="tip-title">新旧方案如何选？</h4>
+                    </div>
+                </div>
+                <div class="tip-description">
+                    <p>Cursor 为 Pro 用户提供了选择权，但存在一些困惑和误区。</p>
+                    <p><strong>保留旧方案:</strong> 现有 Pro 用户如果不喜欢速率限制，可以手动切换回每月 <code>500次快速请求</code> 的旧方案。切换路径：<code>Dashboard > Settings > Advanced</code>。</p>
+                    <p><strong>常见误区:</strong> 认为可以在用完 <code>500次</code> 快速请求后，再切换到无限速率方案来“绕过”限制。这很可能行不通，系统设计上是让用户在两种模式中<code>择其一</code>。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 卡片 4: 内容卡片 - 新旧方案对比 -->
+        <div class="card" data-card-index="4">
+            <header class="content-card-header">
+                <h3 class="brand-title">Deepseek 学习秘籍</h3>
+                <p class="brand-subtitle">免费提升技能，10倍学习效率！</p>
+            </header>
+            <div class="content-card-body">
+                <div class="tip-header">
+                    <div class="tip-meta">
+                        <span class="tip-number">提示 4/4</span>
+                        <h4 class="tip-title">Pro 方案对比：一目了然</h4>
+                    </div>
+                </div>
+                <div class="tip-description">
+                    <p>新旧 Pro 方案的核心区别在于限制方式，您的选择取决于使用习惯。</p>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>特性</th>
+                                <th>新方案 (速率)</th>
+                                <th>旧方案 (数量)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>速度</strong></td>
+                                <td>始终快速</td>
+                                <td>前500次快速</td>
+                            </tr>
+                             <tr>
+                                <td><strong>限制</strong></td>
+                                <td>按<code>频率</code>限制</td>
+                                <td>按<code>数量</code>限制</td>
+                            </tr>
+                            <tr>
+                                <td><strong>超限后</strong></td>
+                                <td>暂时无法请求</td>
+                                <td>进入<code>慢速队列</code></td>
+                            </tr>
+                             <tr>
+                                <td><strong>适合谁</strong></td>
+                                <td>使用频率平稳的用户</td>
+                                <td>短期内有爆发性需求的用户</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

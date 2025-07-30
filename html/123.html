@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Lenny's Newsletter 产品通行证优惠全面解析</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 
+    WEB FONT FIX:
+    The two lines below are added to import the 'Noto Sans SC' font from Google Fonts.
+    This ensures the font is available in any environment, including Puppeteer.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* 基础色板 */
+      --bg-gradient: radial-gradient(ellipse 120% 92% at 58% 18%, #FEEFE4 0%, #FAF3EA 43%, #F7E3C5 100%);
+      --grain: url('data:image/svg+xml;utf8,<svg width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="white"/><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.83" numOctaves="4" stitchTiles="stitch"/></filter><rect width="80" height="80" filter="url(%23noise)" opacity="0.11"/></svg>');
+      --card-bg: #FFFCF7;
+      --main-accent: #006A71;
+      --second-accent: #D97746;
+      --text-main: #4A4A4A;
+      --text-sub: #A6A4A0;
+      --shadow: 0 4px 32px 0 rgba(180,168,160,0.10), 0 2px 6px 0 rgba(68,62,57,0.11);
+      --radius: 28px;
+      --card-w: 360px; /* 固定基础宽度 */
+      --transition: 0.22s cubic-bezier(.24,.98,.57,1.01);
+      --code-bg: #2c2c2c;
+      --code-color: #ffae57;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      /*
+        WEB FONT FIX:
+        'Noto Sans SC' is added to the front of the font stack.
+        The browser will now prioritize this downloaded font.
+      */
+      font-family: 'Noto Sans SC', 'PingFang SC','Segoe UI','Helvetica Neue',Arial, sans-serif;
+      background: var(--bg-gradient), var(--grain);
+      min-height: 100vh;
+      color: var(--text-main);
+      box-sizing: border-box;
+    }
+    body:before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: var(--grain);
+      opacity: 0.7;
+      mix-blend-mode: lighten;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--card-w), 1fr));
+      gap: 36px;
+      padding: 56px 24px 64px 24px;
+      max-width: 1240px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: var(--card-w);
+      aspect-ratio: 3 / 4; /* 强制3:4的宽高比 */
+      margin: 0 auto;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      transition: transform var(--transition), box-shadow var(--transition), filter .18s;
+      animation: fadeInUp 0.7s cubic-bezier(.24,.98,.57,1.01) backwards;
+      will-change: transform;
+    }
+    .card[data-card-index="0"] { animation-delay: 0.06s; }
+    .card[data-card-index="1"] { animation-delay: 0.13s; }
+    .card[data-card-index="2"] { animation-delay: 0.20s; }
+    .card[data-card-index="3"] { animation-delay: 0.27s; }
+    .card[data-card-index="4"] { animation-delay: 0.34s; }
+    .card[data-card-index="5"] { animation-delay: 0.41s; }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(38px) scale(.98);}
+      68% {opacity: .98;}
+      100% { opacity: 1; transform: translateY(0) scale(1);}
+    }
+    .card:hover, .card:focus-visible {
+      transform: translateY(-11px) scale(1.04);
+      box-shadow: 0 12px 36px 0 rgba(180,168,160,0.16), 0 4px 12px 0 rgba(68,62,57,0.13);
+      filter: brightness(1.02);
+      z-index: 2;
+    }
+
+    /* 封面卡片 */
+    .cover {
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(100deg, #FCF6ED 76%, #E9FBF6 180%);
+    }
+    .cover-badge {
+      font-size: 1.02em;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 22px;
+      margin-bottom: 28px; /* 增加间距 */
+    }
+    .cover-icon {
+      border-radius: 50%; 
+      width: 80px; 
+      height: 80px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      font-size: 2.8em;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+      margin: 0 auto 28px auto; /* 关键：使用 auto 左右边距 */
+      background: radial-gradient(circle at 68% 42%, #ece4d4 65%, #f6efe3 100%);
+    }
+    .cover-title {
+      font-size: 1.45em; /* 稍微增大 */
+      font-weight: 900;
+      color: var(--main-accent);
+      margin-bottom: 14px;
+    }
+    .cover-title .highlight {
+      color: var(--second-accent);
+    }
+    .cover-subtitle {
+      font-size: 1.02em;
+      opacity: 0.86;
+      margin-bottom: 28px; /* 增加间距 */
+      max-width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+    .cover-tip {
+      font-size: .9em; color: var(--text-sub);
+      opacity:.8; letter-spacing:.022em;
+      position: absolute;
+      bottom: 28px;
+      left: 0; right: 0;
+    }
+    /* 内容卡片 */
+    .card-head {
+      margin: 22px 0 8px 0;
+      flex-shrink: 0;
+    }
+    .brand-tag {
+      padding: 7px 15px;
+      border-radius: 18px;
+      font-weight: 700;
+      font-size: 0.95em;
+      margin-bottom: .6em;
+    }
+    .brand-sub {
+      font-size: .88em;
+    }
+    .divider {
+      border: none;
+      border-top: 1.5px solid #efe5da;
+      margin: 0 0 18px 0; /* 增加下方间距 */
+      width: 100%;
+      opacity:.86;
+    }
+    .title-with-index {
+      display: flex;
+      align-items: flex-start;
+      font-size: 1.1em; /* 增大 */
+      font-weight: 700;
+      margin-bottom: 14px; /* 增加间距 */
+      line-height: 1.45;
+    }
+    .index-badge {
+      width: 30px;height: 30px;
+      font-size: 1.1em;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-right: 12px;
+      margin-top: 3px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .content, .custom-list, .tools-grid, .price-highlight, .warning-box {
+      font-size: 1em;
+      line-height: 1.7; /* 增大行高 */
+      font-weight: 500;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .tool-item {
+      padding: 6px 8px;
+      border-radius: 14px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.9em;
+    }
+    .price-highlight {
+      padding: 10px 16px;
+      border-radius: 18px;
+      font-weight: 700;
+      font-size: 1.1em;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .custom-list {
+      margin: 10px 0;
+      padding: 0;
+    }
+    .custom-list-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 0.98em;
+      line-height: 1.65;
+    }
+    .custom-bullet {
+      min-width: 26px;
+      min-height: 26px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      margin-right: 12px;
+      margin-top: 4px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    code {
+      font-family: "JetBrains Mono", "Menlo", "Fira Mono", monospace;
+      border-radius: 6px;
+      padding: 2px 0.45em;
+      font-size: 0.92em;
+      font-weight: 500;
+      vertical-align: 0.05em;
+    }
+    .warning-box {
+      border-left: 3px solid var(--second-accent);
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 10px;
+      font-size: 0.94em;
+      line-height: 1.6;
+    }
+
+    /* --- 颜色与通用样式 --- */
+    .cover-badge, .price-highlight { background: linear-gradient(95deg, #fff2e6 60%, #e8f6f4 100%); color: var(--second-accent); }
+    .cover-icon { background: radial-gradient(circle at 68% 42%, #ece4d4 65%, #f6efe3 100%); }
+    .brand-tag, .tool-item { background: linear-gradient(90deg,#e6f2f0 66%, #fce9da 100%); color: var(--main-accent); }
+    .index-badge, .custom-bullet { background: var(--second-accent); color: #fff9f1; }
+    .warning-box { background: linear-gradient(95deg, #fff8f0 60%, #fef7f0 100%); }
+    code { background: var(--code-bg); color: var(--code-color); }
+    strong { font-weight: 600; color: var(--main-accent); }
+    
+    /* --- 响应式调整 --- */
+    @media (max-width: 820px) {
+      .bento-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        padding: 40px 16px;
+        gap: 24px;
+      }
+      .card { width: 100%; }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 15px; }
+      .bento-grid {
+        grid-template-columns: 1fr;
+        padding: 24px 12px;
+      }
+      .card { padding: 20px 22px; }
+      .cover-icon { width: 70px; height: 70px; }
+      .cover-title { font-size: 1.3em; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bento-grid">
+    <!-- 封面卡片 -->
+    <div class="card cover" data-card-index="0">
+         <span class="cover-icon">💎</span>
+      <span class="cover-badge">超级福利</span>
+      <div class="cover-title">
+        <span class="highlight">15+ 工具</span> 免费年卡
+      </div>
+      <div class="cover-subtitle">
+        Lenny's Newsletter 产品通行证，一站式解锁价值 $10,000+ 工具包
+      </div>
+      <div class="cover-tip">滑动查看完整优惠详情</div>
+    </div>
+
+    <!-- 年度订阅优惠卡片 -->
+    <div class="card" data-card-index="1">
+      <div class="card-head">
+        <span class="brand-tag">年度订阅方案</span>
+        <span class="brand-sub">Annual Subscription</span>
+      </div>
+      <div class="divider"></div>
+      <div class="title-with-index">
+        <span class="index-badge">1</span>
+        <span>年付 $200，解锁全部工具年卡</span>
+      </div>
+      <div class="price-highlight">
+        $200/年 ≈ 价值超 $10,000 工具包
+      </div>
+      <div class="content">
+        包含开发、设计、协作、效率四大类 <code>15+</code> 款高端工具一年使用权。
+      </div>
+      <div class="tools-grid">
+        <div class="tool-item">Replit</div>
+        <div class="tool-item">Replit</div>
+        <div class="tool-item">Lovable</div>
+        <div class="tool-item">Bolt</div>
+        <div class="tool-item">n8n</div>
+        <div class="tool-item">Warp</div>
+        <div class="tool-item">Raycast</div>
+        <div class="tool-item">Gamma</div>
+        <div class="tool-item">Mobbin</div>
+        <div class="tool-item">Descript</div>
+        <div class="tool-item">Perplexity</div>
+        <div class="tool-item">Granola</div>
+        <div class="tool-item">Linear</div>
+        <div class="tool-item">Superhuman</div>
+        <div class="tool-item">MagicPatterns</div>
+      </div>
+    </div>
+
+    <!-- Insider 会员优惠卡片 -->
+    <div class="card" data-card-index="2">
+      <div class="card-head">
+        <span class="brand-tag">Insider 高级会员</span>
+        <span class="brand-sub">Premium Tier for Power Users</span>
+      </div>
+      <div class="divider"></div>
+      <div class="title-with-index">
+        <span class="index-badge">2</span>
+        <span>$350/年 Insider 专属特权</span>
+      </div>
+      <div class="price-highlight">
+        $350/年 = 年度全部福利 + 双重保障
+      </div>
+      <div class="content">
+        在年度订阅基础上，额外享受两大“高枕无忧”独家权益：
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          <strong>保证获取</strong>：所有工具均为您预留名额，无需担心售罄。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          <strong>独家合作</strong>：未来部分限量高端产品，仅 Insider 可享。
+        </div>
+      </div>
+      <div class="content" style="margin-top: 10px;">
+        年度会员可随时补差价 <code>$150</code> 升级，是追求极致效率和信息优势用户的最佳选择。
+      </div>
+    </div>
+
+    <!-- 重要条款卡片 -->
+    <div class="card" data-card-index="3">
+      <div class="card-head">
+        <span class="brand-tag">重要条款</span>
+        <span class="brand-sub">Terms & Conditions</span>
+      </div>
+      <div class="divider"></div>
+      <div class="title-with-index">
+        <span class="index-badge">3</span>
+        <span>兑换规则与限制条件</span>
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          <strong>新用户专享：</strong>必须为该工具的新用户，付费或试用过均不可用。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          <strong>订阅限制：</strong>仅限 <code>年度</code> 或 <code>Insider</code> 订阅，月付用户无法参与活动。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">③</span>
+          <strong>数量有限：</strong>优惠码先到先得，兑完即止，不定期轮换。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">④</span>
+          <strong>独立兑换：</strong>每个工具需单独兑换，有效期自兑换日算起一年。
+        </div>
+      </div>
+      <div class="warning-box">
+        <strong>⚠️ 退款政策：</strong>所有订阅均为最终销售，即便部分产品售罄，也不支持退款。
+      </div>
+    </div>
+
+    <!-- 额外福利卡片 -->
+    <div class="card" data-card-index="4">
+      <div class="card-head">
+        <span class="brand-tag">会员福利</span>
+        <span class="brand-sub">Community & Content Access</span>
+      </div>
+      <div class="divider"></div>
+      <div class="title-with-index">
+        <span class="index-badge">4</span>
+        <span>订阅即享社区与内容权益</span>
+      </div>
+      <div class="content">
+        除了工具包，您还将获得：
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          <strong>深度内容：</strong>畅读5年+精华产品建设通讯与播客库。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          <strong>精英社区：</strong>加入3万+会员的Slack群，与全球顶尖产品人交流。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">③</span>
+          <strong>成长支持：</strong>参与AMA、导师计划、读书会等专属活动。
+        </div>
+      </div>
+      <div class="content" style="margin-top: 10px;">
+        支持 <code>团队订阅</code> 和 <code>礼品订阅</code>，可向公司申请学习经费报销。
+      </div>
+    </div>
+
+    <!-- 兑换流程卡片 -->
+    <div class="card" data-card-index="5">
+      <div class="card-head">
+        <span class="brand-tag">兑换指南</span>
+        <span class="brand-sub">Redemption Guide</span>
+      </div>
+      <div class="divider"></div>
+      <div class="title-with-index">
+        <span class="index-badge">5</span>
+        <span>三步兑换，轻松享受福利</span>
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">1</span>
+          购买 <strong>年度订阅</strong> 或 <strong>Insider 会员</strong> 资格。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">2</span>
+          访问您的专属兑换页面，领取心仪工具的优惠码。
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">3</span>
+          前往该工具的官网完成兑换，即可开启一年免费使用。
+        </div>
+      </div>
+       <div class="warning-box" style="margin-top: 15px;">
+        <strong>💡 温馨提示：</strong>兑换高峰期页面可能加载缓慢，请耐心或错峰访问。工具阵容按季度更新，敬请期待！
+      </div>
+    </div>
+  </div>
+</body>
+</html>

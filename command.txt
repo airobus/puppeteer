@@ -1,0 +1,2 @@
+使用：node generate-v1.js  会禁用动画（从而避免渲染问题）
+使用：node generate 普通使用

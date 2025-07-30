@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>免费获取Gemini Pro会员攻略</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, 
+                rgba(255, 240, 245, 0.8) 0%, 
+                rgba(240, 248, 255, 0.9) 25%, 
+                rgba(248, 255, 248, 0.8) 50%, 
+                rgba(255, 250, 240, 0.9) 75%, 
+                rgba(250, 240, 255, 0.8) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(173, 216, 230, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 40% 60%, rgba(221, 160, 221, 0.2) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            color: #2c3e50;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #546e7a;
+            opacity: 0.8;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            width: 360px;
+            height: 480px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+            justify-self: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cover-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cover-card .brand {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .cover-card .main-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .cover-card .highlight {
+            color: #ffae57;
+        }
+
+        .cover-card .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .cover-card .icon {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .cover-card .swipe-hint {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .content-card {
+            color: #2c3e50;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .card-header .main-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .card-header .subtitle {
+            font-size: 0.9rem;
+            color: #7986cb;
+            opacity: 0.8;
+        }
+
+        .step-number {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .step-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .step-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #546e7a;
+            flex-grow: 1;
+        }
+
+        .step-description code {
+            background: #2c2c2c;
+            color: #ffae57;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .url-highlight {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .tip {
+            background: rgba(255, 174, 87, 0.1);
+            border-left: 4px solid #ffae57;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 360px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>免费获取Gemini Pro会员攻略</h1>
+        <p>价值300美元的15个月会员，轻松掌握AI工具使用技巧</p>
+    </div>
+
+    <div class="cards-container">
+        <!-- 封面卡片 -->
+        <div class="card cover-card" data-card-index="0">
+            <!-- <div class="brand">AI工具使用指南</div> -->
+            <div class="main-title">免费获取 <span class="highlight">300美元</span> Gemini Pro</div>
+            <div class="subtitle">15个月会员，解锁AI视频生成新时代</div>
+            <div class="icon">🎬</div>
+            <div class="swipe-hint">继续浏览查看详细步骤 →</div>
+        </div>
+
+        <!-- 步骤1 -->
+        <div class="card content-card" data-card-index="1">
+            <div class="card-header">
+                <div class="main-title">Gemini Pro 免费获取攻略</div>
+                <div class="subtitle">AI视频生成 · 深度研究 · 内容创作</div>
+            </div>
+            
+            <div class="step-number">步骤 1/4</div>
+            <div class="step-title">访问学生优惠活动页面</div>
+            <div class="step-description">
+                <p>Google针对部分国家大学生推出的教育优惠活动，可以免费获得15个月的Gemini Pro会员。</p>
+                
+                <div class="url-highlight">
+                    https://gemini.google/students
+                </div>
+                
+                <p>登录你的Google账号，点击<code>Get offer获取优惠</code>按钮，系统会要求验证学生身份。</p>
+                
+            
+            </div>
+        </div>
+
+        <!-- 步骤2 -->
+        <div class="card content-card" data-card-index="2">
+            <div class="card-header">
+                <div class="main-title">Gemini Pro 免费获取攻略</div>
+                <div class="subtitle">AI视频生成 · 深度研究 · 内容创作</div>
+            </div>
+            
+            <div class="step-number">步骤 2/4</div>
+            <div class="step-title">获取临时教育邮箱</div>
+            <div class="step-description">
+                <p>使用临时教育邮箱来通过Google的学生身份验证，这是整个流程的关键步骤。</p>
+                
+                <div class="url-highlight">
+                    https://tempmail.edu.kg
+                </div>
+                
+                <p>虽然这个网站不是标准的教育网站，但域名包含<code>.edu</code>后缀，Google等平台通过检查邮箱是否包含<code>.edu</code>来验证学生身份。</p>
+                
+              
+            </div>
+        </div>
+
+        <!-- 步骤3 -->
+        <div class="card content-card" data-card-index="3">
+            <div class="card-header">
+                <div class="main-title">Gemini Pro 免费获取攻略</div>
+                <div class="subtitle">AI视频生成 · 深度研究 · 内容创作</div>
+            </div>
+            
+            <div class="step-number">步骤 3/4</div>
+            <div class="step-title">配置付款方式</div>
+            <div class="step-description">
+                <p>虽然是免费15个月，但Google要求输入有效的PayPal或信用卡作为付款方式，用于15个月后的自动续费。</p>
+                
+                <p><strong>重要提醒：</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>如果使用自己的信用卡，务必设置提醒</li>
+                    <li>在明年8月份之前取消订阅</li>
+                    <li>避免15个月后自动扣费</li>
+                </ul>
+                
+                
+            </div>
+        </div>
+
+        <!-- 步骤4 -->
+        <div class="card content-card" data-card-index="4">
+            <div class="card-header">
+                <div class="main-title">Gemini Pro 免费获取攻略</div>
+                <div class="subtitle">AI视频生成 · 深度研究 · 内容创作</div>
+            </div>
+            
+            <div class="step-number">步骤 4/4</div>
+            <div class="step-title">获取虚拟信用卡（可选）</div>
+            <div class="step-description">
+                <p>如果没有国际信用卡，可以考虑使用虚拟信用卡服务来完成付款方式验证。</p>
+                
+                <div class="url-highlight">
+                    https://yeka.ai/i/AIROBUS
+                </div>
+                
+                <p><strong>野卡特点：</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>可用于订阅Claude、ChatGPT、Cursor等AI产品</li>
+                    <li>开卡费用约10美元/年</li>
+                    <li>使用优惠码<code>AIROBUS</code>可减免2美元</li>
+                </ul>
+                
+                
+            </div>
+        </div>
+
+        <!-- 总结卡片 -->
+        <div class="card content-card" data-card-index="5">
+            <div class="card-header">
+                <div class="main-title">Gemini Pro 核心功能</div>
+                <div class="subtitle">价值300美元的AI工具体验</div>
+            </div>
+            
+            <div class="step-number">功能亮点</div>
+            <div class="step-title">三大核心应用场景</div>
+            <div class="step-description">
+                <p><strong>🎬 Veo3视频生成</strong><br/>
+                目前唯一能同时生成视频、语音和音效的AI模型，效果出色。</p>
+                
+                <p><strong>🔍 Deep Research功能</strong><br/>
+                基于Google搜索积累，可运行上百个网页搜索并生成总结，效果超越ChatGPT。</p>
+                
+                <p><strong>🌐 多形态内容创作</strong><br/>
+                研究完成后可转换成网页、播客等形态，Gemini 2.5 Pro制作效果出色。</p>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>

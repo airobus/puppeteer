@@ -1,0 +1,45 @@
+<!-- template.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>我的 Bento 卡片</title>
+  <style>
+    /* 你可以引入任何喜欢的字体 */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      /* 为了方便调试，给个背景色 */
+      background-color: #f0f2f5; 
+      display: grid;
+      place-items: center;
+      height: 100vh;
+    }
+    #my-bento-card {
+      width: 450px;
+      height: 300px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 24px;
+      padding: 32px;
+      box-sizing: border-box;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+    .card-title { font-size: 28px; font-weight: 700; }
+    .card-content { font-size: 18px; line-height: 1.5; }
+    .card-footer { font-size: 14px; opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <!-- 这是我们要截图的目标 -->
+  <div id="my-bento-card">
+    <div class="card-title">探索 Puppeteer</div>
+    <div class="card-content">用代码驱动浏览器，将精美的网页设计转化为高清图片。</div>
+    <div class="card-footer">由 AI 助手生成</div>
+  </div>
+</body>
+</html>

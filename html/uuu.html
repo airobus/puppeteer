@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Lenny’s Newsletter 产品通行证优惠全面解析</title>
+  <style>
+    :root {
+      --bento-bg-gradient: radial-gradient(ellipse at 30% 20%, #fff8ec 0%, #f5e7d6 80%, #e8dbc8 100%);
+      --grain: url('data:image/svg+xml;utf8,<svg width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.90" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.09"/></svg>');
+      --main-card-bg: #fffcf7;
+      --main-accent: #006a71;
+      --secondary-accent: #d97746;
+      --text-main: #4a4a4a;
+      --code-bg: #2c2c2c;
+      --code-color: #ffae57;
+      --shadow: 0 4px 32px 0 rgba(180,168,160,0.10), 0 2px 6px 0 rgba(68,62,57,0.14);
+      --radius: 28px;
+      --transition: 0.22s cubic-bezier(.24,.98,.57,1.01);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'PingFang SC', 'Lato', 'Helvetica Neue', Arial, 'Microsoft YaHei', sans-serif;
+      background: var(--bento-bg-gradient), var(--grain);
+      min-height: 100vh;
+      color: var(--text-main);
+      box-sizing: border-box;
+    }
+    body:before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: var(--grain);
+      opacity: 1;
+      mix-blend-mode: soft-light;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 36px;
+      padding: 56px 14px 64px 14px;
+      max-width: 1180px;
+      margin: 0 auto;
+      z-index: 1;
+      position: relative;
+    }
+    .card {
+      background: var(--main-card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px 28px 28px 28px;
+      position: relative;
+      transition: transform var(--transition), box-shadow var(--transition), filter .18s;
+      min-width: 0;
+      min-height: 0;
+      animation: fadeInUp 0.7s cubic-bezier(.24,.98,.57,1.01) backwards;
+      will-change: transform, box-shadow;
+    }
+    .card[data-card-index="0"] { animation-delay: 0.06s; }
+    .card[data-card-index="1"] { animation-delay: 0.14s; }
+    .card[data-card-index="2"] { animation-delay: 0.22s; }
+    .card[data-card-index="3"] { animation-delay: 0.3s; }
+    .card[data-card-index="4"] { animation-delay: 0.36s; }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(28px) scale(.96);}
+      60%{ opacity: .95;}
+      100% { opacity: 1; transform: translateY(0) scale(1);}
+    }
+
+    .card:hover, .card:focus-visible {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 12px 36px 0 rgba(180,168,160,0.16), 0 4px 12px 0 rgba(68,62,57,0.12);
+      z-index: 2;
+      filter: brightness(1.02);
+    }
+
+    /* Cover card */
+    .card.cover {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 370px;
+      gap: 18px;
+      padding-bottom: 40px;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: linear-gradient(95deg,#f4e1d6 60%, #e2e9e6 100%);
+      color: var(--secondary-accent);
+      font-size: 1.04em;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 22px;
+      letter-spacing: 0.02em;
+      margin-bottom: 2px;
+      box-shadow: 0 1px 5px rgba(217,119,70,0.05);
+    }
+    .cover-icon {
+      display: flex;
+      background: radial-gradient(circle at 68% 42%, #ece4d4 65%, #f6efe3 100%);
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
+      font-size: 2.6em;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    }
+    .cover-title {
+      font-size: 1.45em;
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: var(--main-accent);
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+    .cover-subtitle {
+      font-size: 1.05em;
+      color: var(--text-main);
+      opacity: 0.78;
+      margin-bottom: 0;
+      letter-spacing: .01em;
+    }
+
+    /* Content card header */
+    .card .section-tag {
+      display: inline-block;
+      background: linear-gradient(98deg,#e9f3f2 50%, #e9ece3 100%);
+      color: var(--main-accent);
+      font-size: 1em;
+      font-weight: 600;
+      padding: 7px 16px 7px 16px;
+      border-radius: 18px;
+      letter-spacing: .03em;
+      margin-bottom: 7px;
+      box-shadow: 0 1.5px 6px rgba(0,106,113,0.05);
+    }
+    .subheading {
+      color: #a6a4a0;
+      font-size: 0.97em;
+      margin-bottom: 16px;
+      margin-top: 3px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #efe5da;
+      margin: 0 -22px 22px -22px;
+      height: 1px;
+    }
+    .title-with-index {
+      display: flex;
+      align-items: center;
+      font-size: 1.13em;
+      font-weight: 700;
+      margin-bottom: 13px;
+      margin-top: 0;
+    }
+    .index-badge {
+      display: inline-flex;
+      font-family: 'Georgia', serif;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      font-size: 1.19em;
+      background: var(--secondary-accent);
+      color: #fff9f1;
+      border-radius: 50%;
+      margin-right: 12px;
+      font-weight: 700;
+      box-shadow: 0 3px 9px rgba(217,119,70,0.06);
+      letter-spacing: .03em;
+    }
+    .card-content {
+      margin-bottom: 0.3em;
+      font-size: 1.03em;
+      line-height: 1.85;
+      word-break: break-word;
+      letter-spacing: 0.01em;
+    }
+    /* Custom bullet design for lists */
+    .custom-list {
+      margin: 16px 0 8px 0;
+      padding: 0;
+    }
+    .custom-list-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 13px;
+      font-size: 1.03em;
+    }
+    .custom-bullet {
+      min-width: 28px;
+      min-height: 28px;
+      background: var(--secondary-accent);
+      color: #fff9f1;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Georgia', serif;
+      font-size: 1.01em;
+      margin-right: 12px;
+      font-weight: 700;
+      box-shadow: 0 1.5px 8px rgba(217,119,70,0.10);
+    }
+    /* Code style */
+    code {
+      font-family: "JetBrains Mono", "Menlo", "Fira Mono", monospace;
+      background: var(--code-bg);
+      color: var(--code-color);
+      border-radius: 7px;
+      padding: 0 0.47em;
+      font-size: 0.98em;
+      font-weight: 500;
+      margin: 0 3px;
+      vertical-align: 0.09em;
+    }
+    @media (max-width: 900px) {
+      .bento-grid { padding: 27px 6px 32px 6px; gap: 19px; }
+      .card { padding: 20px 10px 14px 10px; }
+      .card.cover { min-height: 200px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bento-grid">
+    <!-- 封面卡片 -->
+    <div class="card cover" data-card-index="0">
+      <span class="cover-badge">干货分享</span>
+      <span class="cover-icon">💎</span>
+      <div class="cover-title">Lenny’s Newsletter 产品通行证优惠</div>
+      <div class="cover-subtitle">一次性领取超 1 万美元工具福利，轻松升级产品力</div>
+    </div>
+    <!-- 内容卡片 1 -->
+    <div class="card" data-card-index="1">
+      <span class="section-tag">免费工具年卡</span>
+      <div class="subheading">年度订阅（Annual）200美元 / 年</div>
+      <hr class="divider" />
+      <div class="title-with-index">
+        <span class="index-badge">1</span>
+        年付订阅解锁 15+ 款高端工具
+      </div>
+      <div class="card-content">
+        购买年度订阅后，立享超过 <code>10,000美元</code> 市值的 15+ 款知名付费工具一年免费额度（如 Replit、Linear、Raycast、Superhuman、n8n、Perplexity、Warp 等）。全部为 <code>新用户专属</code>，优惠码限量，按季度轮换，上线即有机会领取最新产品福利。
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          卡券需兑换，每个产品单独申请，先到先得
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          仅支持年付订阅，无月付资格
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">③</span>
+          已领用过某产品无法再次领取该产品优惠
+        </div>
+      </div>
+      <div class="card-content" style="margin-top:4px;">
+        <code>温馨提示：</code>如部分工具优惠名额已被抢完，不支持退款，请留意实时额度更新。
+      </div>
+    </div>
+    <!-- 内容卡片 2 -->
+    <div class="card" data-card-index="2">
+      <span class="section-tag">壕华会员权益</span>
+      <div class="subheading">内部会员（Insider）350美元 / 年</div>
+      <hr class="divider" />
+      <div class="title-with-index">
+        <span class="index-badge">2</span>
+        VIP专属保障 ＋ 隐藏福利
+      </div>
+      <div class="card-content">
+        升级为 <code>Insider</code> 内部会员，除享年度订阅全部福利外，额外尊享：
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          <code>保证获取</code>：只要加入时该产品在阵容内，即使名额抢光也能必得优惠码
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          <code>独家伙伴权益</code>：部分新晋热门合作工具，首发仅Insider可领
+        </div>
+      </div>
+      <div class="card-content">
+        如已有年度订阅，可补差价升级锁定权益，高效获得“永不断流”的产品福利池！
+      </div>
+    </div>
+    <!-- 内容卡片 3 -->
+    <div class="card" data-card-index="3">
+      <span class="section-tag">社区 · 内容</span>
+      <div class="subheading">专享会员生态加持</div>
+      <hr class="divider" />
+      <div class="title-with-index">
+        <span class="index-badge">3</span>
+        一站式成长支持
+      </div>
+      <div class="card-content">
+        不只是工具包，订阅任一付费档位，自动解锁 <code>3 大硬核加成</code>：
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          <code>深度内容：</code> 五年累计的产品与创业洞见通讯 + 播客
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          <code>专属社区：</code> 3万+ 产品精英 Slack 社群，多领域导师计划 & 读书会
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">③</span>
+          <code>线下权益：</code> 区域沙龙、AMA聚会、知识分享专场
+        </div>
+      </div>
+      <div class="card-content">让产品人与创业者高效链接、持续成长。</div>
+    </div>
+    <!-- 内容卡片 4 -->
+    <div class="card" data-card-index="4">
+      <span class="section-tag">兑换 & Q&A</span>
+      <div class="subheading">兑换流程及常见问题</div>
+      <hr class="divider" />
+      <div class="title-with-index">
+        <span class="index-badge">4</span>
+        兑换指引&使用说明
+      </div>
+      <div class="custom-list">
+        <div class="custom-list-item">
+          <span class="custom-bullet">①</span>
+          购买后访问专属兑换页，逐个领取所需产品优惠码
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">②</span>
+          在各合作伙伴官网完成兑换即可享用
+        </div>
+        <div class="custom-list-item">
+          <span class="custom-bullet">③</span>
+          支持团队/礼物订阅，建议申请学习经费报销
+        </div>
+      </div>
+      <div class="card-content" style="margin-top:6px;">
+        页面高峰期间如遇加载慢，多刷新、错峰访问；所有福利实时动态，建议关注官方通知。
+      </div>
+    </div>
+  </div>
+</body>
+</html>
